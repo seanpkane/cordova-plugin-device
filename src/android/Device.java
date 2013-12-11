@@ -33,6 +33,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
@@ -46,7 +48,8 @@ public class Device extends CordovaPlugin {
     private static final String ANDROID_PLATFORM = "Android";
     private static final String AMAZON_PLATFORM = "amazon-fireos";
     private static final String AMAZON_DEVICE = "Amazon";
-
+	
+    Context context = null;
     BroadcastReceiver telephonyReceiver = null;
 
     /**
@@ -66,6 +69,7 @@ public class Device extends CordovaPlugin {
         super.initialize(cordova, webView);
         Device.uuid = getUuid();
         this.initTelephonyReceiver();
+        context = (Context) cordova;
     }
 
     /**
@@ -84,6 +88,7 @@ public class Device extends CordovaPlugin {
             r.put("platform", this.getPlatform());
             r.put("cordova", Device.cordovaVersion);
             r.put("model", this.getModel());
+			r.put("appVersion", this.getAppVersion());
             callbackContext.success(r);
         }
         else {
@@ -218,5 +223,17 @@ public class Device extends CordovaPlugin {
         }
         return false;
     }
+	
+	public String getAppVersion() {
+		PackageInfo pInfo;
+		try {
+			pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+			return pInfo.versionName;
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+	}
 
 }

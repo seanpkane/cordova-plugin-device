@@ -77,6 +77,10 @@
     [devProps setObject:[device systemVersion] forKey:@"version"];
     [devProps setObject:[device uniqueAppInstanceIdentifier] forKey:@"uuid"];
     [devProps setObject:[[self class] cordovaVersion] forKey:@"cordova"];
+	
+	NSDictionary *infoDictionary = [[NSBundle mainBundle]infoDictionary];
+	NSString *version    = infoDictionary[(NSString*)kCFBundleVersionKey];
+	[devProps setObject:[[self class] version] forKey:@"appVersion"];
 
     NSDictionary* devReturn = [NSDictionary dictionaryWithDictionary:devProps];
     return devReturn;
